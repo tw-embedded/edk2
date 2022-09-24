@@ -9,7 +9,7 @@
 #
 ##
 
-[FD.QEMU_VARS]
+[FD.FAKE_VARS]
 BaseAddress   = 0x04000000
 Size          = 0xc0000
 ErasePolarity = 1

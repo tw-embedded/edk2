@@ -22,13 +22,13 @@
 
 [Defines]
 !if $(FD_SIZE_IN_MB) == 2
-  DEFINE FVMAIN_COMPACT_SIZE  = 0x1f8000
+  DEFINE FVMAIN_COMPACT_SIZE  = 0x1ff000
 !endif
 !if $(FD_SIZE_IN_MB) == 3
-  DEFINE FVMAIN_COMPACT_SIZE  = 0x2f8000
+  DEFINE FVMAIN_COMPACT_SIZE  = 0x2ff000
 !endif
 
-[FD.FAKE_EFI]
+[FD.QEMU_EFI]
 BaseAddress   = 0x00000000|gArmTokenSpaceGuid.PcdFdBaseAddress  # QEMU assigns 0 - 0x8000000 for a BootROM
 Size          = $(FD_SIZE)|gArmTokenSpaceGuid.PcdFdSize         # The size in bytes of the FLASH Device
 ErasePolarity = 1
@@ -54,52 +54,20 @@ NumBlocks     = $(FD_NUM_BLOCKS)
 ################################################################################
 
 #
-# Implement the Linux kernel header layout so that the loader will identify
-# it as something bootable, and execute it with a FDT pointer in x0 or r2.
-# This area will be reused to store a copy of the FDT so round it up to 32 KB.
+# UEFI has trouble dealing with FVs that reside at physical address 0x0.
+# So instead, put a hardcoded 'jump to 0x1000' at offset 0x0, and put the
+# real FV at offset 0x1000
 #
-0x00000000|0x00008000
+0x00000000|0x00001000
 DATA = {
 !if $(ARCH) == AARCH64
-  0x01, 0x00, 0x00, 0x10,                         # code0: adr x1, .
-  0xff, 0x1f, 0x00, 0x14,                         # code1: b 0x8000
-  0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, # text_offset: 512 KB
-!if $(FD_SIZE_IN_MB) == 2
-  0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 2 MB
-!endif
-!if $(FD_SIZE_IN_MB) == 3
-  0x00, 0x00, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 3 MB
-!endif
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # flags
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res2
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res3
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res4
-  0x41, 0x52, 0x4d, 0x64,                         # magic: "ARM\x64"
-  0x00, 0x00, 0x00, 0x00                          # res5
+  0x00, 0x04, 0x00, 0x14   # 'b 0x1000' in AArch64 ASM
 !else
-  0x08, 0x10, 0x4f, 0xe2, # adr r1, .
-  0x02, 0x00, 0xa0, 0xe1, # mov r0, r2 (DTB)
-  0x00, 0x00, 0xa0, 0xe1, # nop
-  0x00, 0x00, 0xa0, 0xe1, # nop
-  0x00, 0x00, 0xa0, 0xe1, # nop
-  0x00, 0x00, 0xa0, 0xe1, # nop
-  0x00, 0x00, 0xa0, 0xe1, # nop
-  0x00, 0x00, 0xa0, 0xe1, # nop
-
-  0xf6, 0x1f, 0x00, 0xea, # b 0x8000
-  0x18, 0x28, 0x6f, 0x01, # magic
-  0x00, 0x00, 0x00, 0x00, # start
-!if $(FD_SIZE_IN_MB) == 2
-  0x00, 0x00, 0x20, 0x00, # image size: 2 MB
-!endif
-!if $(FD_SIZE_IN_MB) == 3
-  0x00, 0x00, 0x30, 0x00, # image size: 3 MB
-!endif
-  0x01, 0x02, 0x03, 0x04  # endiannness flag
+  0xfe, 0x03, 0x00, 0xea   # 'b 0x1000' in AArch32 ASM
 !endif
 }
 
-0x00008000|$(FVMAIN_COMPACT_SIZE)
+0x00001000|$(FVMAIN_COMPACT_SIZE)
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
@@ -116,7 +84,7 @@ FV = FVMAIN_COMPACT
 #
 ################################################################################
 
-!include FakeFvMain.fdf.inc
+!include ArmVirtQemuFvMain.fdf.inc
 
 [FV.FVMAIN_COMPACT]
 FvAlignment        = 16
@@ -136,7 +104,20 @@ READ_STATUS        = TRUE
 READ_LOCK_CAP      = TRUE
 READ_LOCK_STATUS   = TRUE
 
-  INF RuleOverride = SELF_RELOC FakePkg/PrePi/ArmVirtPrePiUniCoreRelocatable.inf
+  INF ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf
+  INF MdeModulePkg/Core/Pei/PeiMain.inf
+  INF ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+  INF ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
+  INF ArmPkg/Drivers/CpuPei/CpuPei.inf
+  INF MdeModulePkg/Universal/PCD/Pei/Pcd.inf
+  INF MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+  INF MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf
+
+!if $(TPM2_ENABLE) == TRUE
+  INF MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf
+  INF OvmfPkg/Tcg/Tcg2Config/Tcg2ConfigPei.inf
+  INF SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.inf
+!endif
 
   FILE FV_IMAGE = 9E21FD93-9C72-4c15-8C4B-E77F1DB2D792 {
     SECTION GUIDED EE4E5898-3914-4259-9D6E-DC7BD79403CF PROCESSING_REQUIRED = TRUE {

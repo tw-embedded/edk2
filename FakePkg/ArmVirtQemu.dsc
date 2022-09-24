@@ -13,15 +13,15 @@
 #
 ################################################################################
 [Defines]
-  PLATFORM_NAME                  = fake
+  PLATFORM_NAME                  = ArmVirtQemu
   PLATFORM_GUID                  = 37d7e986-f7e9-45c2-8067-e371421a626c
   PLATFORM_VERSION               = 0.1
   DSC_SPECIFICATION              = 0x00010005
-  OUTPUT_DIRECTORY               = Build/Fake-$(ARCH)
+  OUTPUT_DIRECTORY               = Build/ArmVirtQemu-$(ARCH)
   SUPPORTED_ARCHITECTURES        = AARCH64|ARM
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = FakePkg/Fake.fdf
+  FLASH_DEFINITION               = ArmVirtPkg/ArmVirtQemu.fdf
 
   #
   # Defines for default states.  These can be changed on the command line.
@@ -29,6 +29,8 @@
   #
   DEFINE TTY_TERMINAL            = FALSE
   DEFINE SECURE_BOOT_ENABLE      = FALSE
+  DEFINE TPM2_ENABLE             = FALSE
+  DEFINE TPM2_CONFIG_ENABLE      = FALSE
 
   #
   # Network definition
@@ -46,7 +48,7 @@
 
 !include NetworkPkg/NetworkDefines.dsc.inc
 
-!include FakePkg/ArmVirt.dsc.inc
+!include ArmVirtPkg/ArmVirt.dsc.inc
 
 !include MdePkg/MdeLibs.dsc.inc
 
@@ -62,14 +64,14 @@
   QemuFwCfgSimpleParserLib|OvmfPkg/Library/QemuFwCfgSimpleParserLib/QemuFwCfgSimpleParserLib.inf
   QemuLoadImageLib|OvmfPkg/Library/GenericQemuLoadImageLib/GenericQemuLoadImageLib.inf
 
-  ArmVirtMemInfoLib|FakePkg/Library/QemuVirtMemInfoLib/QemuVirtMemInfoLib.inf
+  ArmPlatformLib|ArmPlatformPkg/Library/ArmPlatformLibNull/ArmPlatformLibNull.inf
 
   TimerLib|ArmPkg/Library/ArmArchTimerLib/ArmArchTimerLib.inf
-  NorFlashPlatformLib|FakePkg/Library/NorFlashQemuLib/NorFlashQemuLib.inf
+  NorFlashPlatformLib|ArmVirtPkg/Library/NorFlashQemuLib/NorFlashQemuLib.inf
 
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
-  PlatformBootManagerLib|FakePkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+  PlatformBootManagerLib|ArmVirtPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
   PlatformBmPrintScLib|OvmfPkg/Library/PlatformBmPrintScLib/PlatformBmPrintScLib.inf
   CustomizedDisplayLib|MdeModulePkg/Library/CustomizedDisplayLib/CustomizedDisplayLib.inf
   FrameBufferBltLib|MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.inf
@@ -79,23 +81,39 @@
   PciSegmentLib|MdePkg/Library/BasePciSegmentLibPci/BasePciSegmentLibPci.inf
   PciHostBridgeLib|OvmfPkg/Fdt/FdtPciHostBridgeLib/FdtPciHostBridgeLib.inf
   PciHostBridgeUtilityLib|OvmfPkg/Library/PciHostBridgeUtilityLib/PciHostBridgeUtilityLib.inf
+  PeiHardwareInfoLib|OvmfPkg/Library/HardwareInfoLib/PeiHardwareInfoLib.inf
+
+!if $(TPM2_ENABLE) == TRUE
+  Tpm2CommandLib|SecurityPkg/Library/Tpm2CommandLib/Tpm2CommandLib.inf
+  Tcg2PhysicalPresenceLib|OvmfPkg/Library/Tcg2PhysicalPresenceLibQemu/DxeTcg2PhysicalPresenceLib.inf
+  TpmMeasurementLib|SecurityPkg/Library/DxeTpmMeasurementLib/DxeTpmMeasurementLib.inf
+  TpmPlatformHierarchyLib|SecurityPkg/Library/PeiDxeTpmPlatformHierarchyLib/PeiDxeTpmPlatformHierarchyLib.inf
+!else
   TpmMeasurementLib|MdeModulePkg/Library/TpmMeasurementLibNull/TpmMeasurementLibNull.inf
   TpmPlatformHierarchyLib|SecurityPkg/Library/PeiDxeTpmPlatformHierarchyLibNull/PeiDxeTpmPlatformHierarchyLib.inf
+!endif
+
+[LibraryClasses.common.PEIM]
+  ArmVirtMemInfoLib|ArmVirtPkg/Library/QemuVirtMemInfoLib/QemuVirtMemInfoPeiLib.inf
+
+!if $(TPM2_ENABLE) == TRUE
+  BaseCryptLib|CryptoPkg/Library/BaseCryptLib/PeiCryptLib.inf
+  ResetSystemLib|MdeModulePkg/Library/PeiResetSystemLib/PeiResetSystemLib.inf
+  Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2DeviceLibDTpm.inf
+!endif
 
 [LibraryClasses.common.DXE_DRIVER]
   ReportStatusCodeLib|MdeModulePkg/Library/DxeReportStatusCodeLib/DxeReportStatusCodeLib.inf
+
+!if $(TPM2_ENABLE) == TRUE
+  Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibTcg2/Tpm2DeviceLibTcg2.inf
+!endif
 
 [LibraryClasses.common.UEFI_DRIVER]
   UefiScsiLib|MdePkg/Library/UefiScsiLib/UefiScsiLib.inf
 
 [BuildOptions]
 !include NetworkPkg/NetworkBuildOptions.dsc.inc
-
-  #
-  # We need to avoid jump tables in SEC modules, so that the PE/COFF
-  # self-relocation code itself is guaranteed to be position independent.
-  #
-  GCC:*_*_*_CC_FLAGS = -fno-jump-tables
 
 ################################################################################
 #
@@ -114,11 +132,14 @@
 
   gEfiMdeModulePkgTokenSpaceGuid.PcdTurnOffUsbLegacySupport|TRUE
 
+  gArmVirtTokenSpaceGuid.PcdTpm2SupportEnabled|$(TPM2_ENABLE)
+
 [PcdsFixedAtBuild.common]
 !if $(ARCH) == AARCH64
   gArmTokenSpaceGuid.PcdVFPEnabled|1
 !endif
 
+  gArmPlatformTokenSpaceGuid.PcdCPUCoresStackBase|0x4007c000
   gArmPlatformTokenSpaceGuid.PcdCPUCorePrimaryStackSize|0x4000
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxVariableSize|0x2000
   gEfiMdeModulePkgTokenSpaceGuid.PcdMaxAuthVariableSize|0x2800
@@ -161,6 +182,12 @@
   #
 !include NetworkPkg/NetworkPcds.dsc.inc
 
+  # System Memory Base -- fixed at 0x4000_0000
+  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x40000000
+
+  # initial location of the device tree blob passed by QEMU -- base of DRAM
+  gArmVirtTokenSpaceGuid.PcdDeviceTreeInitialBaseAddress|0x40000000
+
   gEfiMdeModulePkgTokenSpaceGuid.PcdResetOnMemoryTypeInformationChange|FALSE
   gEfiMdeModulePkgTokenSpaceGuid.PcdBootManagerMenuFile|{ 0x21, 0xaa, 0x2c, 0x46, 0x14, 0x76, 0x03, 0x45, 0x83, 0x6e, 0x8a, 0xb6, 0xf4, 0x66, 0x23, 0x31 }
 
@@ -169,6 +196,11 @@
   # BuildCpuHob().
   #
   gEmbeddedTokenSpaceGuid.PcdPrePiCpuIoSize|16
+
+  #
+  # Enable the non-executable DXE stack. (This gets set up by DxeIpl)
+  #
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSetNxForStack|TRUE
 
 !if $(SECURE_BOOT_ENABLE) == TRUE
   # override the default values from SecurityPkg to ensure images from all sources are verified in secure boot
@@ -180,27 +212,14 @@
   gEfiMdePkgTokenSpaceGuid.PcdReportStatusCodePropertyMask|3
   gEfiShellPkgTokenSpaceGuid.PcdShellFileOperationSize|0x20000
 
-[PcdsPatchableInModule.common]
-  # we need to provide a resolution for this PCD that supports PcdSet64()
-  # being called from FakePkg/Library/PlatformPeiLib/PlatformPeiLib.c,
-  # even though that call will be compiled out on this platform as it does
-  # not (and cannot) support the TPM2 driver stack
-  gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress|0x0
-
-  #
-  # This will be overridden in the code
-  #
-  gArmTokenSpaceGuid.PcdSystemMemoryBase|0x0
-  gArmTokenSpaceGuid.PcdSystemMemorySize|0x0
-
-  #
-  # Define a default initial address for the device tree.
-  # Ignored if x0 != 0 at entry.
-  #
-  gArmVirtTokenSpaceGuid.PcdDeviceTreeInitialBaseAddress|0x40000000
-
-  gArmTokenSpaceGuid.PcdFdBaseAddress|0x0
-  gArmTokenSpaceGuid.PcdFvBaseAddress|0x0
+[PcdsFixedAtBuild.AARCH64]
+  # Clearing BIT0 in this PCD prevents installing a 32-bit SMBIOS entry point,
+  # if the entry point version is >= 3.0. AARCH64 OSes cannot assume the
+  # presence of the 32-bit entry point anyway (because many AARCH64 systems
+  # don't have 32-bit addressable physical RAM), and the additional allocations
+  # below 4 GB needlessly fragment the memory map. So expose the 64-bit entry
+  # point only, for entry point versions >= 3.0.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdSmbiosEntryPointProvideMethod|0x2
 
 [PcdsDynamicDefault.common]
   gEfiMdePkgTokenSpaceGuid.PcdPlatformBootTimeOut|3
@@ -208,6 +227,9 @@
   ## If TRUE, OvmfPkg/AcpiPlatformDxe will not wait for PCI
   #  enumeration to complete before installing ACPI tables.
   gEfiMdeModulePkgTokenSpaceGuid.PcdPciDisableBusEnumeration|TRUE
+
+  # System Memory Size -- 1 MB initially, actual size will be fetched from DT
+  gArmTokenSpaceGuid.PcdSystemMemorySize|0x00100000
 
   gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum|0x0
   gArmTokenSpaceGuid.PcdArmArchTimerIntrNum|0x0
@@ -254,6 +276,23 @@
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv4PXESupport|0x01
   gEfiNetworkPkgTokenSpaceGuid.PcdIPv6PXESupport|0x01
 
+  #
+  # TPM2 support
+  #
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress|0x0
+!if $(TPM2_ENABLE) == TRUE
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpmInstanceGuid|{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpm2HashMask|0
+!endif
+
+[PcdsDynamicHii]
+  gArmVirtTokenSpaceGuid.PcdForceNoAcpi|L"ForceNoAcpi"|gArmVirtVariableGuid|0x0|FALSE|NV,BS
+
+!if $(TPM2_CONFIG_ENABLE) == TRUE
+  gEfiSecurityPkgTokenSpaceGuid.PcdTcgPhysicalPresenceInterfaceVer|L"TCG2_VERSION"|gTcg2ConfigFormSetGuid|0x0|"1.3"|NV,BS
+  gEfiSecurityPkgTokenSpaceGuid.PcdTpm2AcpiTableRev|L"TCG2_VERSION"|gTcg2ConfigFormSetGuid|0x8|3|NV,BS
+!endif
+
 ################################################################################
 #
 # Components Section - list of all EDK II Modules needed by this Platform
@@ -263,14 +302,38 @@
   #
   # PEI Phase modules
   #
-  FakePkg/PrePi/ArmVirtPrePiUniCoreRelocatable.inf {
+  ArmPlatformPkg/PrePeiCore/PrePeiCoreUniCore.inf
+  MdeModulePkg/Core/Pei/PeiMain.inf
+  MdeModulePkg/Universal/PCD/Pei/Pcd.inf {
     <LibraryClasses>
-      ExtractGuidedSectionLib|EmbeddedPkg/Library/PrePiExtractGuidedSectionLib/PrePiExtractGuidedSectionLib.inf
-      LzmaDecompressLib|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
-      PrePiLib|EmbeddedPkg/Library/PrePiLib/PrePiLib.inf
-      HobLib|EmbeddedPkg/Library/PrePiHobLib/PrePiHobLib.inf
-      PrePiHobListPointerLib|ArmPlatformPkg/Library/PrePiHobListPointerLib/PrePiHobListPointerLib.inf
-      MemoryAllocationLib|EmbeddedPkg/Library/PrePiMemoryAllocationLib/PrePiMemoryAllocationLib.inf
+      PcdLib|MdePkg/Library/BasePcdLibNull/BasePcdLibNull.inf
+  }
+  ArmPlatformPkg/PlatformPei/PlatformPeim.inf
+  ArmPlatformPkg/MemoryInitPei/MemoryInitPeim.inf
+  ArmPkg/Drivers/CpuPei/CpuPei.inf
+
+  MdeModulePkg/Universal/Variable/Pei/VariablePei.inf
+
+!if $(TPM2_ENABLE) == TRUE
+  MdeModulePkg/Universal/ResetSystemPei/ResetSystemPei.inf {
+    <LibraryClasses>
+      ResetSystemLib|ArmVirtPkg/Library/ArmVirtPsciResetSystemPeiLib/ArmVirtPsciResetSystemPeiLib.inf
+  }
+  OvmfPkg/Tcg/Tcg2Config/Tcg2ConfigPei.inf
+  SecurityPkg/Tcg/Tcg2Pei/Tcg2Pei.inf {
+    <LibraryClasses>
+      HashLib|SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterPei.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+  }
+!endif
+
+  MdeModulePkg/Core/DxeIplPeim/DxeIpl.inf {
+    <LibraryClasses>
+      NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
   }
 
   #
@@ -302,6 +365,9 @@
   MdeModulePkg/Universal/SecurityStubDxe/SecurityStubDxe.inf {
     <LibraryClasses>
       NULL|SecurityPkg/Library/DxeImageVerificationLib/DxeImageVerificationLib.inf
+!if $(TPM2_ENABLE) == TRUE
+      NULL|SecurityPkg/Library/DxeTpm2MeasureBootLib/DxeTpm2MeasureBootLib.inf
+!endif
   }
   SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
   OvmfPkg/EnrollDefaultKeys/EnrollDefaultKeys.inf
@@ -314,7 +380,7 @@
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/Library/ArmVirtPL031FdtClientLib/ArmVirtPL031FdtClientLib.inf
+      NULL|ArmVirtPkg/Library/ArmVirtPL031FdtClientLib/ArmVirtPL031FdtClientLib.inf
   }
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
 
@@ -329,7 +395,7 @@
   ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/Library/ArmVirtTimerFdtClientLib/ArmVirtTimerFdtClientLib.inf
+      NULL|ArmVirtPkg/Library/ArmVirtTimerFdtClientLib/ArmVirtTimerFdtClientLib.inf
   }
   ArmPlatformPkg/Drivers/NorFlashDxe/NorFlashDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
@@ -455,13 +521,32 @@
   MdeModulePkg/Bus/Usb/UsbMassStorageDxe/UsbMassStorageDxe.inf
 
   #
+  # TPM2 support
+  #
+!if $(TPM2_ENABLE) == TRUE
+  SecurityPkg/Tcg/Tcg2Dxe/Tcg2Dxe.inf {
+    <LibraryClasses>
+      HashLib|SecurityPkg/Library/HashLibBaseCryptoRouter/HashLibBaseCryptoRouterDxe.inf
+      Tpm2DeviceLib|SecurityPkg/Library/Tpm2DeviceLibRouter/Tpm2DeviceLibRouterDxe.inf
+      NULL|SecurityPkg/Library/Tpm2DeviceLibDTpm/Tpm2InstanceLibDTpm.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha1/HashInstanceLibSha1.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha256/HashInstanceLibSha256.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha384/HashInstanceLibSha384.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSha512/HashInstanceLibSha512.inf
+      NULL|SecurityPkg/Library/HashInstanceLibSm3/HashInstanceLibSm3.inf
+  }
+!if $(TPM2_CONFIG_ENABLE) == TRUE
+  SecurityPkg/Tcg/Tcg2Config/Tcg2ConfigDxe.inf
+!endif
+!endif
+
+  #
   # ACPI Support
   #
-  FakePkg/PlatformHasAcpiDtDxe/PlatformHasAcpiDtDxe.inf
+  ArmVirtPkg/PlatformHasAcpiDtDxe/PlatformHasAcpiDtDxe.inf
 [Components.AARCH64]
   MdeModulePkg/Universal/Acpi/BootGraphicsResourceTableDxe/BootGraphicsResourceTableDxe.inf
   OvmfPkg/AcpiPlatformDxe/AcpiPlatformDxe.inf {
     <LibraryClasses>
       NULL|OvmfPkg/Fdt/FdtPciPcdProducerLib/FdtPciPcdProducerLib.inf
   }
-
