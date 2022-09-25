@@ -9,7 +9,13 @@
 #include <AsmMacroIoLibV8.h>
 
 ASM_FUNC(_ModuleEntryPoint)
-  bl    ASM_PFX(DiscoverDramFromDt)
+  #bl    ASM_PFX(DiscoverDramFromDt)
+  adr   x0, PcdGet64 (PcdSystemMemoryBase)
+  mov   x1, 0x30000000
+  str   x1, [x0]
+  adr   x0, PcdGet64 (PcdSystemMemorySize)
+  mov   x1, 0x40000000
+  str   x1, [x0]
 
   // Get ID of this CPU in Multicore system
   bl    ASM_PFX(ArmReadMpidr)

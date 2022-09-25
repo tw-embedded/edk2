@@ -37,6 +37,7 @@ PlatformPeim (
   VOID
   )
 {
+#if 0
   VOID          *Base;
   VOID          *NewBase;
   UINTN         FdtSize;
@@ -187,6 +188,7 @@ PlatformPeim (
 
     ASSERT_EFI_ERROR (Status);
   }
+#endif
 
   BuildFvHob (PcdGet64 (PcdFvBaseAddress), PcdGet32 (PcdFvSize));
 
