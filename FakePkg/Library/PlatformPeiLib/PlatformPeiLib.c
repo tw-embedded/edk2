@@ -31,13 +31,30 @@ STATIC CONST EFI_PEI_PPI_DESCRIPTOR  mTpm2InitializationDonePpi = {
   NULL
 };
 
+#if 1
 EFI_STATUS
 EFIAPI
 PlatformPeim (
   VOID
   )
 {
-#if 0
+  UINT64        *UartHobData;
+
+  UartHobData = BuildGuidHob (&gEarlyPL011BaseAddressGuid, sizeof *UartHobData);
+  ASSERT (UartHobData != NULL);
+  *UartHobData = 0x20000000;
+
+  BuildFvHob (PcdGet64 (PcdFvBaseAddress), PcdGet32 (PcdFvSize));
+
+  return EFI_SUCCESS;
+}
+#else
+EFI_STATUS
+EFIAPI
+PlatformPeim (
+  VOID
+  )
+{
   VOID          *Base;
   VOID          *NewBase;
   UINTN         FdtSize;
@@ -188,9 +205,9 @@ PlatformPeim (
 
     ASSERT_EFI_ERROR (Status);
   }
-#endif
 
   BuildFvHob (PcdGet64 (PcdFvBaseAddress), PcdGet32 (PcdFvSize));
 
   return EFI_SUCCESS;
 }
+#endif

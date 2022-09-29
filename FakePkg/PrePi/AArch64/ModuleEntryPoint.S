@@ -9,13 +9,7 @@
 #include <AsmMacroIoLibV8.h>
 
 ASM_FUNC(_ModuleEntryPoint)
-  #bl    ASM_PFX(DiscoverDramFromDt)
-  adr   x0, PcdGet64 (PcdSystemMemoryBase)
-  mov   x1, 0x30000000
-  str   x1, [x0]
-  adr   x0, PcdGet64 (PcdSystemMemorySize)
-  mov   x1, 0x40000000
-  str   x1, [x0]
+  bl    ASM_PFX(DiscoverDramFromDt)
 
   // Get ID of this CPU in Multicore system
   bl    ASM_PFX(ArmReadMpidr)
@@ -118,15 +112,6 @@ ASM_PFX(DiscoverDramFromDt):
   mov   x27, x1             // preserve base of image pointer
 
   //
-  // The base of the runtime image has been preserved in x1. Check whether
-  // the expected magic number can be found in the header.
-  //
-  ldr   w8, .LArm64LinuxMagic
-  ldr   w9, [x1, #0x38]
-  cmp   w8, w9
-  bne   .Lout
-
-  //
   //
   // OK, so far so good. We have confirmed that we likely have a DTB and are
   // booting via the arm64 Linux boot protocol. Update the base-of-image PCD
@@ -157,11 +142,12 @@ ASM_PFX(DiscoverDramFromDt):
   // respective PCDs. This will also return false if a corrupt DTB is
   // encountered.
   //
-  mov   x0, x28
-  adr   x1, PcdGet64 (PcdSystemMemoryBase)
-  adr   x2, PcdGet64 (PcdSystemMemorySize)
-  bl    FindMemnode
-  cbz   x0, .Lout
+  adr   x0, PcdGet64 (PcdSystemMemoryBase)
+  mov   x1, 0x30000000
+  str   x1, [x0]
+  adr   x0, PcdGet64 (PcdSystemMemorySize)
+  mov   x1, 0x40000000
+  str   x1, [x0]
 
   //
   // Copy the DTB to the slack space right after the 64 byte arm64/Linux style
