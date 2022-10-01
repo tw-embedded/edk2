@@ -75,9 +75,9 @@ ArmVirtGetMemoryMap (
     ));
 
   // Memory mapped peripherals (UART, RTC, GIC, virtio-mmio, etc)
-  VirtualMemoryTable[1].PhysicalBase = MACH_VIRT_PERIPH_BASE;
-  VirtualMemoryTable[1].VirtualBase  = MACH_VIRT_PERIPH_BASE;
-  VirtualMemoryTable[1].Length       = MACH_VIRT_PERIPH_SIZE;
+  VirtualMemoryTable[1].PhysicalBase = 0;
+  VirtualMemoryTable[1].VirtualBase  = 0;
+  VirtualMemoryTable[1].Length       = PcdGet64 (PcdSystemMemoryBase);
   VirtualMemoryTable[1].Attributes   = ARM_MEMORY_REGION_ATTRIBUTE_DEVICE;
 
   // Map the FV region as normal executable memory
