@@ -44,6 +44,7 @@ SerialPortInitialize (
   return RETURN_SUCCESS;
 }
 
+#if 0
 STATIC
 UINT64
 SerialPortGetBaseAddress (
@@ -128,6 +129,43 @@ SerialPortGetBaseAddress (
 
   return 0;
 }
+#else
+STATIC
+UINT64
+SerialPortGetBaseAddress (
+  VOID
+  )
+{
+  UINT64              BaudRate;
+  UINT32              ReceiveFifoDepth;
+  EFI_PARITY_TYPE     Parity;
+  UINT8               DataBits;
+  EFI_STOP_BITS_TYPE  StopBits;
+  UINTN               UartBase;
+  RETURN_STATUS       Status;
+
+  UartBase = (UINTN) 0x20000000;
+  BaudRate         = (UINTN)FixedPcdGet64 (PcdUartDefaultBaudRate);
+  ReceiveFifoDepth = 0; // Use the default value for Fifo depth
+  Parity           = (EFI_PARITY_TYPE)FixedPcdGet8 (PcdUartDefaultParity);
+  DataBits         = FixedPcdGet8 (PcdUartDefaultDataBits);
+  StopBits         = (EFI_STOP_BITS_TYPE)FixedPcdGet8 (PcdUartDefaultStopBits);
+
+  Status = PL011UartInitializePort (
+              UartBase,
+              FixedPcdGet32 (PL011UartClkInHz),
+              &BaudRate,
+              &ReceiveFifoDepth,
+              &Parity,
+              &DataBits,
+              &StopBits
+              );
+  if (!EFI_ERROR (Status)) {
+    return UartBase;
+  }
+  return 0;
+}
+#endif
 
 /**
   Write data to serial device.
