@@ -38,8 +38,26 @@ PlatformPeim (
   VOID
   )
 {
-  UINT64        *UartHobData;
+#if 0
+  UINT64        *FdtHobData;
+  UINTN         FdtSize;
+  UINTN         FdtPages;
+  VOID          *NewBase;
 
+  FdtSize = 0x1000;
+  FdtPages = EFI_SIZE_TO_PAGES (FdtSize);
+  NewBase  = AllocatePages (FdtPages);
+  ASSERT (NewBase != NULL);
+  fdt_create_empty_tree(NewBase, EFI_PAGES_TO_SIZE (FdtPages));
+
+  FdtHobData = BuildGuidHob (&gFdtHobGuid, sizeof *FdtHobData);
+  ASSERT (FdtHobData != NULL);
+  *FdtHobData = (UINTN)NewBase;
+#endif
+
+  //BuildGuidHob (&gEfiCpuArchProtocolGuid
+
+  UINT64        *UartHobData;
   UartHobData = BuildGuidHob (&gEarlyPL011BaseAddressGuid, sizeof *UartHobData);
   ASSERT (UartHobData != NULL);
   *UartHobData = 0x20000000;

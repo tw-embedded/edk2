@@ -1,0 +1,28 @@
+[Defines]
+  INF_VERSION                    = 1.25
+  BASE_NAME                      = FakeDriver
+  FILE_GUID                      = 52999999-9999-9999-9999-999999999999
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = fake_driver_entry
+
+[Sources]
+  fake_driver.c
+
+[Packages]
+  MdeModulePkg/MdeModulePkg.dec
+  MdePkg/MdePkg.dec
+
+[LibraryClasses]
+  BaseLib
+  DebugLib
+  PcdLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+
+[Guids]
+
+[Pcd]
+
+[Depex]
+  TRUE

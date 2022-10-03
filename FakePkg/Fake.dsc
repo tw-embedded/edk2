@@ -464,4 +464,7 @@
     <LibraryClasses>
       NULL|OvmfPkg/Fdt/FdtPciPcdProducerLib/FdtPciPcdProducerLib.inf
   }
-
+  FakePkg/Library/FakeDriver/fake_driver.inf {
+    <LibraryClasses>
+      DebugLib | MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
+  }

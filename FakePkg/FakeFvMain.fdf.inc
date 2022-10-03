@@ -199,3 +199,5 @@ READ_LOCK_STATUS   = TRUE
   # Ramdisk support
   #
   INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
+
+  INF FakePkg/Library/FakeDriver/fake_driver.inf
