@@ -38,7 +38,7 @@ PlatformPeim (
   VOID
   )
 {
-#if 0
+#if 1
   UINT64        *FdtHobData;
   UINTN         FdtSize;
   UINTN         FdtPages;
@@ -54,8 +54,6 @@ PlatformPeim (
   ASSERT (FdtHobData != NULL);
   *FdtHobData = (UINTN)NewBase;
 #endif
-
-  //BuildGuidHob (&gEfiCpuArchProtocolGuid
 
   UINT64        *UartHobData;
   UartHobData = BuildGuidHob (&gEarlyPL011BaseAddressGuid, sizeof *UartHobData);

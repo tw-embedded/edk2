@@ -37,7 +37,6 @@ ArmPsciResetSystemLibConstructor (
 {
   EFI_STATUS           Status;
   FDT_CLIENT_PROTOCOL  *FdtClient;
-  CONST VOID           *Prop;
 
   Status = gBS->LocateProtocol (
                   &gFdtClientProtocolGuid,
@@ -46,6 +45,8 @@ ArmPsciResetSystemLibConstructor (
                   );
   ASSERT_EFI_ERROR (Status);
 
+#if 0
+  CONST VOID           *Prop;
   Status = FdtClient->FindCompatibleNodeProperty (
                         FdtClient,
                         "arm,psci-0.2",
@@ -70,6 +71,9 @@ ArmPsciResetSystemLibConstructor (
       ));
     return EFI_NOT_FOUND;
   }
+#else
+  mArmPsciMethod = 1; // hvc
+#endif
 
   return EFI_SUCCESS;
 }
