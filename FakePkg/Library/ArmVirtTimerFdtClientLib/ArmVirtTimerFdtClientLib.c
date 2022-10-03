@@ -24,6 +24,48 @@ typedef struct {
 } INTERRUPT_PROPERTY;
 #pragma pack ()
 
+#if 1
+// interrupts = <0x1 0xd 0x304 0x1 0xe 0x304 0x1 0xb 0x304 0x1 0xa 0x304>;
+RETURN_STATUS
+EFIAPI
+ArmVirtTimerFdtClientLibConstructor (
+  VOID
+  )
+{
+  CONST INTERRUPT_PROPERTY  InterruptProp[] = { { 0x1, 0xd, 0x304}, { 0x1, 0xe, 0x304}, {0x1, 0xb, 0x304}, {0x1, 0xa, 0x304} };
+  INT32                     SecIntrNum, IntrNum, VirtIntrNum, HypIntrNum;
+  RETURN_STATUS             PcdStatus;
+
+  SecIntrNum = InterruptProp[0].Number
+               + (InterruptProp[0].Type ? 16 : 0);
+  IntrNum = InterruptProp[1].Number
+            + (InterruptProp[1].Type ? 16 : 0);
+  VirtIntrNum = InterruptProp[2].Number
+                + (InterruptProp[2].Type ? 16 : 0);
+  HypIntrNum = InterruptProp[3].Number
+               + (InterruptProp[3].Type ? 16 : 0);
+
+  DEBUG ((
+    DEBUG_INFO,
+    "Found Timer interrupts %d, %d, %d, %d\n",
+    SecIntrNum,
+    IntrNum,
+    VirtIntrNum,
+    HypIntrNum
+    ));
+
+  PcdStatus = PcdSet32S (PcdArmArchTimerSecIntrNum, SecIntrNum);
+  ASSERT_RETURN_ERROR (PcdStatus);
+  PcdStatus = PcdSet32S (PcdArmArchTimerIntrNum, IntrNum);
+  ASSERT_RETURN_ERROR (PcdStatus);
+  PcdStatus = PcdSet32S (PcdArmArchTimerVirtIntrNum, VirtIntrNum);
+  ASSERT_RETURN_ERROR (PcdStatus);
+  PcdStatus = PcdSet32S (PcdArmArchTimerHypIntrNum, HypIntrNum);
+  ASSERT_RETURN_ERROR (PcdStatus);
+
+  return EFI_SUCCESS;
+}
+#else
 RETURN_STATUS
 EFIAPI
 ArmVirtTimerFdtClientLibConstructor (
@@ -100,3 +142,4 @@ ArmVirtTimerFdtClientLibConstructor (
 
   return EFI_SUCCESS;
 }
+#endif
