@@ -21,6 +21,73 @@
 
 STATIC ARM_GIC_ARCH_REVISION  mGicArchRevision;
 
+#if 1
+RETURN_STATUS
+EFIAPI
+ArmVirtGicArchLibConstructor (
+  VOID
+  )
+{
+  UINT32               IccSre;
+  UINT64               DistBase, RedistBase;
+  RETURN_STATUS        PcdStatus;
+
+  //
+  // The GIC v3 DT binding describes a series of at least 3 physical (base
+  // addresses, size) pairs: the distributor interface (GICD), at least one
+  // redistributor region (GICR) containing dedicated redistributor
+  // interfaces for all individual CPUs, and the CPU interface (GICC).
+  // Under virtualization, we assume that the first redistributor region
+  // listed covers the boot CPU. Also, our GICv3 driver only supports the
+  // system register CPU interface, so we can safely ignore the MMIO version
+  // which is listed after the sequence of redistributor interfaces.
+  // This means we are only interested in the first two memory regions
+  // supplied, and ignore everything else.
+  //
+
+  // RegProp[0..1] == { GICD base, GICD size }
+  DistBase = 0x10010000;
+  ASSERT (DistBase < MAX_UINTN);
+
+  // RegProp[2..3] == { GICR base, GICR size }
+  RedistBase =  0x10020000;
+  ASSERT (RedistBase < MAX_UINTN);
+
+  PcdStatus = PcdSet64S (PcdGicDistributorBase, DistBase);
+  ASSERT_RETURN_ERROR (PcdStatus);
+  PcdStatus = PcdSet64S (PcdGicRedistributorsBase, RedistBase);
+  ASSERT_RETURN_ERROR (PcdStatus);
+
+  DEBUG ((
+    DEBUG_INFO,
+    "Found GIC v3 (re)distributor @ 0x%Lx (0x%Lx)\n",
+    DistBase,
+    RedistBase
+    ));
+
+  //
+  // The default implementation of ArmGicArchLib is responsible for enabling
+  // the system register interface on the GICv3 if one is found. So let's do
+  // the same here.
+  //
+  IccSre = ArmGicV3GetControlSystemRegisterEnable ();
+  if (!(IccSre & ICC_SRE_EL2_SRE)) {
+    ArmGicV3SetControlSystemRegisterEnable (IccSre | ICC_SRE_EL2_SRE);
+    IccSre = ArmGicV3GetControlSystemRegisterEnable ();
+  }
+
+  //
+  // Unlike the default implementation, there is no fall through to GICv2
+  // mode if this GICv3 cannot be driven in native mode due to the fact
+  // that the System Register interface is unavailable.
+  //
+  ASSERT (IccSre & ICC_SRE_EL2_SRE);
+
+  mGicArchRevision = ARM_GIC_ARCH_REVISION_3;
+
+  return RETURN_SUCCESS;
+}
+#else
 RETURN_STATUS
 EFIAPI
 ArmVirtGicArchLibConstructor (
@@ -156,6 +223,7 @@ ArmVirtGicArchLibConstructor (
 
   return RETURN_SUCCESS;
 }
+#endif
 
 ARM_GIC_ARCH_REVISION
 EFIAPI
