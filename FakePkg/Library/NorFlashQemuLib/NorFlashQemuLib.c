@@ -27,6 +27,28 @@ NorFlashPlatformInitialization (
 
 NOR_FLASH_DESCRIPTION  mNorFlashDevices[MAX_FLASH_BANKS];
 
+#if 1
+EFI_STATUS
+NorFlashPlatformGetDevices (
+  OUT NOR_FLASH_DESCRIPTION  **NorFlashDescriptions,
+  OUT UINT32                 *Count
+  )
+{
+  UINT32               Num;
+
+  // fake soc configuration
+  Num = 0;
+  mNorFlashDevices[Num].DeviceBaseAddress = 0x4000000;
+  mNorFlashDevices[Num].RegionBaseAddress = 0x4000000;
+  mNorFlashDevices[Num].Size              = 0x1000000;
+  mNorFlashDevices[Num].BlockSize         = QEMU_NOR_BLOCK_SIZE;
+
+  *NorFlashDescriptions = mNorFlashDevices;
+  *Count                = 1;
+
+  return EFI_SUCCESS;
+}
+#else
 EFI_STATUS
 NorFlashPlatformGetDevices (
   OUT NOR_FLASH_DESCRIPTION  **NorFlashDescriptions,
@@ -134,3 +156,4 @@ NorFlashPlatformGetDevices (
 
   return EFI_SUCCESS;
 }
+#endif
