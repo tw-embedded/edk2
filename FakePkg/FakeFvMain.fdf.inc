@@ -40,7 +40,7 @@ READ_LOCK_STATUS   = TRUE
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-  INF OvmfPkg/Fdt/VirtioFdtDxe/VirtioFdtDxe.inf
+  INF FakePkg/drivers/VirtioFdtDxe/VirtioFdtDxe.inf
   INF EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
   INF OvmfPkg/Fdt/HighMemDxe/HighMemDxe.inf
 
@@ -200,4 +200,5 @@ READ_LOCK_STATUS   = TRUE
   #
   INF MdeModulePkg/Universal/Disk/RamDiskDxe/RamDiskDxe.inf
 
-  INF FakePkg/Library/FakeDriver/fake_driver.inf
+  # added by alix
+  INF FakePkg/drivers/fake_driver/fake_driver.inf

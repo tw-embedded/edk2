@@ -342,7 +342,7 @@
   #
   # Platform Driver
   #
-  OvmfPkg/Fdt/VirtioFdtDxe/VirtioFdtDxe.inf
+  FakePkg/drivers/VirtioFdtDxe/VirtioFdtDxe.inf
   EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
   OvmfPkg/Fdt/HighMemDxe/HighMemDxe.inf
   OvmfPkg/VirtioBlkDxe/VirtioBlk.inf
@@ -464,7 +464,9 @@
     <LibraryClasses>
       NULL|OvmfPkg/Fdt/FdtPciPcdProducerLib/FdtPciPcdProducerLib.inf
   }
-  FakePkg/Library/FakeDriver/fake_driver.inf {
+
+  # added by alix
+  FakePkg/drivers/fake_driver/fake_driver.inf {
     <LibraryClasses>
       DebugLib | MdePkg/Library/BaseDebugLibSerialPort/BaseDebugLibSerialPort.inf
   }
