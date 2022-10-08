@@ -16,6 +16,23 @@
 
 #include <Protocol/FdtClient.h>
 
+#if 1
+RETURN_STATUS EFIAPI ArmVirtPL031FdtClientLibConstructor(VOID)
+{
+  UINT64               RegBase;
+  RETURN_STATUS        PcdStatus;
+
+  RegBase = 0x20003000;
+  ASSERT (RegBase < MAX_UINT32);
+
+  PcdStatus = PcdSet32S (PcdPL031RtcBase, (UINT32)RegBase);
+  ASSERT_RETURN_ERROR (PcdStatus);
+
+  DEBUG ((DEBUG_INFO, "Found PL031 RTC @ 0x%Lx\n", RegBase));
+
+  return EFI_SUCCESS;
+}
+#else
 RETURN_STATUS
 EFIAPI
 ArmVirtPL031FdtClientLibConstructor (
@@ -92,3 +109,4 @@ ArmVirtPL031FdtClientLibConstructor (
 
   return EFI_SUCCESS;
 }
+#endif
