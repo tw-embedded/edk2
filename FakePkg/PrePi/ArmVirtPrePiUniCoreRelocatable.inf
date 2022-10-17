@@ -29,6 +29,7 @@
   Arm/ModuleEntryPoint.S
 
 [Packages]
+  FakePkg/ArmVirtPkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec

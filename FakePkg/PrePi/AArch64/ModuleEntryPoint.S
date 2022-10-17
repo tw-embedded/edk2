@@ -8,6 +8,8 @@
 
 #include <AsmMacroIoLibV8.h>
 
+#include <configuration.h>
+
 ASM_FUNC(_ModuleEntryPoint)
   bl    ASM_PFX(DiscoverDramFromDt)
 
@@ -143,10 +145,10 @@ ASM_PFX(DiscoverDramFromDt):
   // encountered.
   //
   adr   x0, PcdGet64 (PcdSystemMemoryBase)
-  mov   x1, 0x30000000
+  mov   x1, MEMORY_BASE
   str   x1, [x0]
   adr   x0, PcdGet64 (PcdSystemMemorySize)
-  mov   x1, 0x40000000
+  mov   x1, MEMORY_SIZE
   str   x1, [x0]
 
   //
