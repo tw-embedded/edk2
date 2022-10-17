@@ -13,6 +13,8 @@
 
 #include <Protocol/FdtClient.h>
 
+#include <configuration.h>
+
 #define QEMU_NOR_BLOCK_SIZE  SIZE_256KB
 
 #define MAX_FLASH_BANKS  4
@@ -38,9 +40,9 @@ NorFlashPlatformGetDevices (
 
   // fake soc configuration
   Num = 0;
-  mNorFlashDevices[Num].DeviceBaseAddress = 0x4000000;
-  mNorFlashDevices[Num].RegionBaseAddress = 0x4000000;
-  mNorFlashDevices[Num].Size              = 0x1000000;
+  mNorFlashDevices[Num].DeviceBaseAddress = NORFLASH_BASE;
+  mNorFlashDevices[Num].RegionBaseAddress = NORFLASH_BASE;
+  mNorFlashDevices[Num].Size              = NORFLASH_SIZE;
   mNorFlashDevices[Num].BlockSize         = QEMU_NOR_BLOCK_SIZE;
 
   *NorFlashDescriptions = mNorFlashDevices;

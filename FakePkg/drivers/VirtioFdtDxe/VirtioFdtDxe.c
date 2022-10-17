@@ -20,6 +20,8 @@
 
 #include <Protocol/FdtClient.h>
 
+#include <configuration.h>
+
 #pragma pack (1)
 typedef struct {
   VENDOR_DEVICE_PATH          Vendor;
@@ -37,9 +39,9 @@ EFI_STATUS EFIAPI InitializeVirtioFdtDxe(IN EFI_HANDLE ImageHandle, IN EFI_SYSTE
     VIRTIO_TRANSPORT_DEVICE_PATH  *DevicePath;
     EFI_HANDLE Handle;
 
-    RegBase = 0x20002000;
-    RegSize = 0x200;
-    for (i = 0; i < 8; i++) {
+    RegBase = VIRT_IO_BASE;
+    RegSize = VIRT_IO_SIZE;
+    for (i = 0; i < VIRT_IO_CNT; i++) {
         DevicePath = (VIRTIO_TRANSPORT_DEVICE_PATH *) CreateDeviceNode(HARDWARE_DEVICE_PATH, HW_VENDOR_DP, sizeof(VIRTIO_TRANSPORT_DEVICE_PATH));
         if (DevicePath == NULL) {
             DEBUG((DEBUG_ERROR, "%a: Out of memory\n", __FUNCTION__));

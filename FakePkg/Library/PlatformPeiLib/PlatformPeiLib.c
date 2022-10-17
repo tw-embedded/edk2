@@ -19,6 +19,8 @@
 #include <Guid/EarlyPL011BaseAddress.h>
 #include <Guid/FdtHob.h>
 
+#include <configuration.h>
+
 STATIC CONST EFI_PEI_PPI_DESCRIPTOR  mTpm2DiscoveredPpi = {
   EFI_PEI_PPI_DESCRIPTOR_PPI | EFI_PEI_PPI_DESCRIPTOR_TERMINATE_LIST,
   &gOvmfTpmDiscoveredPpiGuid,
@@ -56,7 +58,7 @@ PlatformPeim (
   UINT64        *UartHobData;
   UartHobData = BuildGuidHob (&gEarlyPL011BaseAddressGuid, sizeof *UartHobData);
   ASSERT (UartHobData != NULL);
-  *UartHobData = 0x20000000;
+  *UartHobData = PL011_BASE;
 
   BuildFvHob (PcdGet64 (PcdFvBaseAddress), PcdGet32 (PcdFvSize));
 

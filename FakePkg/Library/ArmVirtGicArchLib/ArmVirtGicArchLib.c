@@ -19,6 +19,8 @@
 
 #include <Protocol/FdtClient.h>
 
+#include <configuration.h>
+
 STATIC ARM_GIC_ARCH_REVISION  mGicArchRevision;
 
 #if 1
@@ -46,11 +48,11 @@ ArmVirtGicArchLibConstructor (
   //
 
   // RegProp[0..1] == { GICD base, GICD size }
-  DistBase = 0x10010000;
+  DistBase = GIC_V3_DIST_BASE;
   ASSERT (DistBase < MAX_UINTN);
 
   // RegProp[2..3] == { GICR base, GICR size }
-  RedistBase =  0x10020000;
+  RedistBase =  GIC_V3_REDIST_BASE;
   ASSERT (RedistBase < MAX_UINTN);
 
   PcdStatus = PcdSet64S (PcdGicDistributorBase, DistBase);

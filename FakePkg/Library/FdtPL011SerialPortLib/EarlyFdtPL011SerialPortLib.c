@@ -17,6 +17,8 @@
 #include <Library/SerialPortLib.h>
 #include <libfdt.h>
 
+#include <configuration.h>
+
 RETURN_STATUS
 EFIAPI
 SerialPortInitialize (
@@ -144,7 +146,7 @@ SerialPortGetBaseAddress (
   UINTN               UartBase;
   RETURN_STATUS       Status;
 
-  UartBase = (UINTN) 0x20000000;
+  UartBase = (UINTN) PL011_BASE;
   BaudRate         = (UINTN)FixedPcdGet64 (PcdUartDefaultBaudRate);
   ReceiveFifoDepth = 0; // Use the default value for Fifo depth
   Parity           = (EFI_PARITY_TYPE)FixedPcdGet8 (PcdUartDefaultParity);

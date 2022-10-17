@@ -16,13 +16,15 @@
 
 #include <Protocol/FdtClient.h>
 
+#include <configuration.h>
+
 #if 1
 RETURN_STATUS EFIAPI ArmVirtPL031FdtClientLibConstructor(VOID)
 {
   UINT64               RegBase;
   RETURN_STATUS        PcdStatus;
 
-  RegBase = 0x20003000;
+  RegBase = PL031_BASE;
   ASSERT (RegBase < MAX_UINT32);
 
   PcdStatus = PcdSet32S (PcdPL031RtcBase, (UINT32)RegBase);

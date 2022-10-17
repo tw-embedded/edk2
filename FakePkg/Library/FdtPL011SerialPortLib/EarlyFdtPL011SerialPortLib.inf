@@ -25,6 +25,7 @@
   FdtLib
 
 [Packages]
+  FakePkg/ArmVirtPkg.dec
   MdePkg/MdePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec

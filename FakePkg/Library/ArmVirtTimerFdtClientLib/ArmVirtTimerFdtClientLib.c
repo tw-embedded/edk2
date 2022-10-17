@@ -16,6 +16,8 @@
 
 #include <Protocol/FdtClient.h>
 
+#include <configuration.h>
+
 #pragma pack (1)
 typedef struct {
   UINT32    Type;
@@ -25,19 +27,13 @@ typedef struct {
 #pragma pack ()
 
 #if 1
-// interrupts = <0x1 0xd 0x304 0x1 0xe 0x304 0x1 0xb 0x304 0x1 0xa 0x304>;
-#define ARCH_TIMER_S_EL1_IRQ  10
-#define ARCH_TIMER_NS_EL1_IRQ 11
-#define ARCH_TIMER_VIRT_IRQ   12
-#define ARCH_TIMER_NS_EL2_IRQ 13
-
 RETURN_STATUS
 EFIAPI
 ArmVirtTimerFdtClientLibConstructor (
   VOID
   )
 {
-  CONST INTERRUPT_PROPERTY  InterruptProp[] = { { 0x1, 0xa, 0x304}, { 0x1, 0xb, 0x304}, {0x1, 0xc, 0x304}, {0x1, 0xd, 0x304} };
+  CONST INTERRUPT_PROPERTY  InterruptProp[] = { { 0x1, ARCH_TIMER_S_EL1_IRQ, 0x304}, { 0x1, ARCH_TIMER_NS_EL1_IRQ, 0x304}, {0x1, ARCH_TIMER_VIRT_IRQ, 0x304}, {0x1, ARCH_TIMER_NS_EL2_IRQ, 0x304} };
   INT32                     SecIntrNum, IntrNum, VirtIntrNum, HypIntrNum;
   RETURN_STATUS             PcdStatus;
 
