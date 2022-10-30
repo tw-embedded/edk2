@@ -19,7 +19,7 @@
 #include <configuration.h>
 
 #if 1
-RETURN_STATUS EFIAPI ArmVirtPL031FdtClientLibConstructor(VOID)
+RETURN_STATUS EFIAPI pl031_client_lib_constructor(VOID)
 {
   UINT64               RegBase;
   RETURN_STATUS        PcdStatus;

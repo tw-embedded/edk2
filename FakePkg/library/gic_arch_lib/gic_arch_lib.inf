@@ -15,7 +15,7 @@
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
   LIBRARY_CLASS                  = gic_arch_lib|DXE_DRIVER UEFI_DRIVER UEFI_APPLICATION
-  CONSTRUCTOR                    = ArmVirtGicArchLibConstructor
+  CONSTRUCTOR                    = gic_arch_lib_constructor
 
 [Sources]
   gic_arch_lib.c

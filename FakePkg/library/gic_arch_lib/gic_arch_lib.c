@@ -26,7 +26,7 @@ STATIC ARM_GIC_ARCH_REVISION  mGicArchRevision;
 #if 1
 RETURN_STATUS
 EFIAPI
-ArmVirtGicArchLibConstructor (
+gic_arch_lib_constructor (
   VOID
   )
 {

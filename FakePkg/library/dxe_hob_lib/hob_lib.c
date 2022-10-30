@@ -38,7 +38,7 @@ VOID  *mHobList = NULL;
 **/
 EFI_STATUS
 EFIAPI
-HobLibConstructor (
+hob_lib_constructor (
   IN EFI_HANDLE        ImageHandle,
   IN EFI_SYSTEM_TABLE  *SystemTable
   )

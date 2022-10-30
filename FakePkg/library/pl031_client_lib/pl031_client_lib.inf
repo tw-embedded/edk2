@@ -9,15 +9,15 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = ArmVirtPL031FdtClientLib
+  BASE_NAME                      = pl031_client_lib
   FILE_GUID                      = 13173319-B270-4669-8592-3BB2B31E9E29
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = ArmVirtPL031FdtClientLib|DXE_DRIVER DXE_RUNTIME_DRIVER
-  CONSTRUCTOR                    = ArmVirtPL031FdtClientLibConstructor
+  LIBRARY_CLASS                  = pl031_client_lib|DXE_DRIVER DXE_RUNTIME_DRIVER
+  CONSTRUCTOR                    = pl031_client_lib_constructor
 
 [Sources]
-  ArmVirtPL031FdtClientLib.c
+  pl031_client_lib.c
 
 [Packages]
   FakePkg/fake_pkg.dec

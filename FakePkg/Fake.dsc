@@ -314,7 +314,7 @@
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/library/ArmVirtPL031FdtClientLib/ArmVirtPL031FdtClientLib.inf
+      NULL|FakePkg/library/pl031_client_lib/pl031_client_lib.inf
   }
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
 
