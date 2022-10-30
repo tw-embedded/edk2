@@ -15,7 +15,7 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = ArmVirtDxeHobLib
+  BASE_NAME                      = fake_dxe_hob_lib
   FILE_GUID                      = 3CD90EEC-EBF3-425D-AAE8-B16215AC4F50
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
@@ -23,7 +23,7 @@
   CONSTRUCTOR                    = HobLibConstructor
 
 [Sources]
-  HobLib.c
+  hob_lib.c
 
 [Packages]
   MdePkg/MdePkg.dec
