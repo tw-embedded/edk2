@@ -46,7 +46,7 @@
 
 !include NetworkPkg/NetworkDefines.dsc.inc
 
-!include FakePkg/ArmFake.dsc.inc
+!include FakePkg/fake.dsc.inc
 
 !include MdePkg/MdeLibs.dsc.inc
 

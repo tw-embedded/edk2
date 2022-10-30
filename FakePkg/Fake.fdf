@@ -144,4 +144,4 @@ READ_LOCK_STATUS   = TRUE
     }
   }
 
-!include ArmVirtRules.fdf.inc
+!include fake_rules.fdf.inc

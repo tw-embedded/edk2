@@ -20,7 +20,7 @@
   virtio_dxe.c
 
 [Packages]
-  FakePkg/ArmFakePkg.dec
+  FakePkg/fake_pkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
   OvmfPkg/OvmfPkg.dec

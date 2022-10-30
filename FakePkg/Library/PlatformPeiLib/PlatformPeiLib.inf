@@ -19,7 +19,7 @@
   PlatformPeiLib.c
 
 [Packages]
-  FakePkg/ArmFakePkg.dec
+  FakePkg/fake_pkg.dec
   ArmPkg/ArmPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
