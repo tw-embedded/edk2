@@ -15,7 +15,7 @@
   LIBRARY_CLASS                  = MemoryInitPeiLib
 
 [Sources]
-  ArmVirtMemoryInitPeiLib.c
+  memory_init_pei_lib.c
 
 [Packages]
   MdePkg/MdePkg.dec
