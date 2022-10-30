@@ -106,7 +106,7 @@
   CpuExceptionHandlerLib|ArmPkg/Library/ArmExceptionLib/ArmExceptionLib.inf
   ArmDisassemblerLib|ArmPkg/Library/ArmDisassemblerLib/ArmDisassemblerLib.inf
   ArmGicLib|ArmPkg/Drivers/ArmGic/ArmGicLib.inf
-  ArmGicArchLib|FakePkg/library/ArmVirtGicArchLib/ArmVirtGicArchLib.inf
+  ArmGicArchLib|FakePkg/library/gic_arch_lib/gic_arch_lib.inf
   ArmSmcLib|ArmPkg/Library/ArmSmcLib/ArmSmcLib.inf
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
   ArmGenericTimerCounterLib|ArmPkg/Library/ArmGenericTimerVirtCounterLib/ArmGenericTimerVirtCounterLib.inf
