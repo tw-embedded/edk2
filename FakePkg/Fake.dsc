@@ -62,14 +62,14 @@
   QemuFwCfgSimpleParserLib|OvmfPkg/Library/QemuFwCfgSimpleParserLib/QemuFwCfgSimpleParserLib.inf
   QemuLoadImageLib|OvmfPkg/Library/GenericQemuLoadImageLib/GenericQemuLoadImageLib.inf
 
-  ArmVirtMemInfoLib|FakePkg/Library/QemuVirtMemInfoLib/QemuVirtMemInfoLib.inf
+  ArmVirtMemInfoLib|FakePkg/library/QemuVirtMemInfoLib/QemuVirtMemInfoLib.inf
 
   TimerLib|ArmPkg/Library/ArmArchTimerLib/ArmArchTimerLib.inf
-  NorFlashPlatformLib|FakePkg/Library/NorFlashQemuLib/NorFlashQemuLib.inf
+  NorFlashPlatformLib|FakePkg/library/NorFlashQemuLib/NorFlashQemuLib.inf
 
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
-  PlatformBootManagerLib|FakePkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+  PlatformBootManagerLib|FakePkg/library/PlatformBootManagerLib/PlatformBootManagerLib.inf
   PlatformBmPrintScLib|OvmfPkg/Library/PlatformBmPrintScLib/PlatformBmPrintScLib.inf
   CustomizedDisplayLib|MdeModulePkg/Library/CustomizedDisplayLib/CustomizedDisplayLib.inf
   FrameBufferBltLib|MdeModulePkg/Library/FrameBufferBltLib/FrameBufferBltLib.inf
@@ -182,7 +182,7 @@
 
 [PcdsPatchableInModule.common]
   # we need to provide a resolution for this PCD that supports PcdSet64()
-  # being called from FakePkg/Library/PlatformPeiLib/PlatformPeiLib.c,
+  # being called from FakePkg/library/PlatformPeiLib/PlatformPeiLib.c,
   # even though that call will be compiled out on this platform as it does
   # not (and cannot) support the TPM2 driver stack
   gEfiSecurityPkgTokenSpaceGuid.PcdTpmBaseAddress|0x0
@@ -314,7 +314,7 @@
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/Library/ArmVirtPL031FdtClientLib/ArmVirtPL031FdtClientLib.inf
+      NULL|FakePkg/library/ArmVirtPL031FdtClientLib/ArmVirtPL031FdtClientLib.inf
   }
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
 
@@ -329,7 +329,7 @@
   ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/Library/ArmVirtTimerFdtClientLib/ArmVirtTimerFdtClientLib.inf
+      NULL|FakePkg/library/ArmVirtTimerFdtClientLib/ArmVirtTimerFdtClientLib.inf
   }
   ArmPlatformPkg/Drivers/NorFlashDxe/NorFlashDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
