@@ -20,7 +20,7 @@
   ArmVirtPL031FdtClientLib.c
 
 [Packages]
-  FakePkg/ArmVirtPkg.dec
+  FakePkg/ArmFakePkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec

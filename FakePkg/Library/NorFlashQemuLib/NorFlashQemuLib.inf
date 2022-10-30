@@ -20,7 +20,7 @@
   NorFlashQemuLib.c
 
 [Packages]
-  FakePkg/ArmVirtPkg.dec
+  FakePkg/ArmFakePkg.dec
   MdePkg/MdePkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   ArmPkg/ArmPkg.dec

@@ -46,7 +46,7 @@
 
 !include NetworkPkg/NetworkDefines.dsc.inc
 
-!include FakePkg/ArmVirt.dsc.inc
+!include FakePkg/ArmFake.dsc.inc
 
 !include MdePkg/MdeLibs.dsc.inc
 
@@ -342,7 +342,7 @@
   #
   # Platform Driver
   #
-  FakePkg/drivers/VirtioFdtDxe/VirtioFdtDxe.inf
+  FakePkg/drivers/virtio_dxe/virtio_dxe.inf
   EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
   OvmfPkg/Fdt/HighMemDxe/HighMemDxe.inf
   OvmfPkg/VirtioBlkDxe/VirtioBlk.inf

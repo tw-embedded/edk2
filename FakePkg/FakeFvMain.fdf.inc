@@ -40,7 +40,7 @@ READ_LOCK_STATUS   = TRUE
 
   INF MdeModulePkg/Core/Dxe/DxeMain.inf
   INF MdeModulePkg/Universal/PCD/Dxe/Pcd.inf
-  INF FakePkg/drivers/VirtioFdtDxe/VirtioFdtDxe.inf
+  INF FakePkg/drivers/virtio_dxe/virtio_dxe.inf
   INF EmbeddedPkg/Drivers/FdtClientDxe/FdtClientDxe.inf
   INF OvmfPkg/Fdt/HighMemDxe/HighMemDxe.inf
 

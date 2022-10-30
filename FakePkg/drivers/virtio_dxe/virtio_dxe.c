@@ -30,7 +30,7 @@ typedef struct {
 } VIRTIO_TRANSPORT_DEVICE_PATH;
 #pragma pack ()
 
-EFI_STATUS EFIAPI InitializeVirtioFdtDxe(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
+EFI_STATUS EFIAPI initialize_virtio_dxe(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM_TABLE *SystemTable)
 {
     EFI_STATUS Status;
     UINT64 RegBase;

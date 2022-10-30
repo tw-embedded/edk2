@@ -29,13 +29,12 @@
   Arm/ModuleEntryPoint.S
 
 [Packages]
-  FakePkg/ArmVirtPkg.dec
+  FakePkg/ArmFakePkg.dec
   MdePkg/MdePkg.dec
   MdeModulePkg/MdeModulePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   ArmPkg/ArmPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
-  FakePkg/ArmVirtPkg.dec
 
 [LibraryClasses]
   BaseLib

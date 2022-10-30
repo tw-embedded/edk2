@@ -19,7 +19,7 @@
   QemuVirtMemInfoLib.c
 
 [Packages]
-  FakePkg/ArmVirtPkg.dec
+  FakePkg/ArmFakePkg.dec
   ArmPkg/ArmPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec

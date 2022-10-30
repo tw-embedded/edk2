@@ -9,18 +9,18 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = VirtioFdtDxe
+  BASE_NAME                      = virtio_dxe
   FILE_GUID                      = 0049858F-8CA7-4CCD-918B-D952CBF32975
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
 
-  ENTRY_POINT                    = InitializeVirtioFdtDxe
+  ENTRY_POINT                    = initialize_virtio_dxe
 
 [Sources]
-  VirtioFdtDxe.c
+  virtio_dxe.c
 
 [Packages]
-  FakePkg/ArmVirtPkg.dec
+  FakePkg/ArmFakePkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
   OvmfPkg/OvmfPkg.dec
