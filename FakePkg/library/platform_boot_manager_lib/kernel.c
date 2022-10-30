@@ -12,7 +12,7 @@
 #include <Library/QemuLoadImageLib.h>
 #include <Library/ReportStatusCodeLib.h>
 
-#include "PlatformBm.h"
+#include "platform_bm.h"
 
 //
 // The entry point of the feature.

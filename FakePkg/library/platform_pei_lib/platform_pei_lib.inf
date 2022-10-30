@@ -9,14 +9,14 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = PlatformPeiLib
+  BASE_NAME                      = platform_pei_lib
   FILE_GUID                      = 59C11815-F8DA-4F49-B4FB-EC1E41ED1F06
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = PlatformPeiLib
+  LIBRARY_CLASS                  = platform_pei_lib
 
 [Sources]
-  PlatformPeiLib.c
+  platform_pei_lib.c
 
 [Packages]
   FakePkg/fake_pkg.dec

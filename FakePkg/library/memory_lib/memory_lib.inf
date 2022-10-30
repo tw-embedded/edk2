@@ -9,18 +9,17 @@
 
 [Defines]
   INF_VERSION                    = 0x0001001A
-  BASE_NAME                      = QemuVirtMemInfoPeiLib
-  FILE_GUID                      = 0c4d10cf-d949-49b4-bd13-47a4ae22efce
+  BASE_NAME                      = memory_lib
+  FILE_GUID                      = 9b30ca82-6746-4a82-a3e6-11ea79df3b46
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = ArmVirtMemInfoLib|PEIM
-  CONSTRUCTOR                    = QemuVirtMemInfoPeiLibConstructor
+  LIBRARY_CLASS                  = memory_lib
 
 [Sources]
-  QemuVirtMemInfoLib.c
-  QemuVirtMemInfoPeiLibConstructor.c
+  memory_lib.c
 
 [Packages]
+  FakePkg/fake_pkg.dec
   ArmPkg/ArmPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
@@ -31,17 +30,13 @@
   ArmLib
   BaseMemoryLib
   DebugLib
-  FdtLib
-  PcdLib
   MemoryAllocationLib
+  PcdLib
 
 [Pcd]
-  gArmTokenSpaceGuid.PcdFdBaseAddress
   gArmTokenSpaceGuid.PcdFvBaseAddress
   gArmTokenSpaceGuid.PcdSystemMemoryBase
   gArmTokenSpaceGuid.PcdSystemMemorySize
 
 [FixedPcd]
-  gArmTokenSpaceGuid.PcdFdSize
   gArmTokenSpaceGuid.PcdFvSize
-  gArmVirtTokenSpaceGuid.PcdDeviceTreeInitialBaseAddress

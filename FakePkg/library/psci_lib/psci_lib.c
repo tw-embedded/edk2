@@ -31,7 +31,7 @@ STATIC UINT32  mArmPsciMethod;
 
 RETURN_STATUS
 EFIAPI
-psci_reset_system_lib_constructor (
+psci_lib_constructor (
   VOID
   )
 {

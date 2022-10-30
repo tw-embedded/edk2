@@ -111,9 +111,9 @@
   ArmHvcLib|ArmPkg/Library/ArmHvcLib/ArmHvcLib.inf
   ArmGenericTimerCounterLib|ArmPkg/Library/ArmGenericTimerVirtCounterLib/ArmGenericTimerVirtCounterLib.inf
 
-  PlatformPeiLib|FakePkg/library/PlatformPeiLib/PlatformPeiLib.inf
+  PlatformPeiLib|FakePkg/library/platform_pei_lib/platform_pei_lib.inf
   MemoryInitPeiLib|FakePkg/library/memory_init_pei_lib/memory_init_pei_lib.inf
-  ResetSystemLib|FakePkg/library/psci_reset_system_lib/psci_reset_system_lib.inf
+  ResetSystemLib|FakePkg/library/psci_lib/psci_lib.inf
 
   # ARM PL031 RTC Driver
   RealTimeClockLib|ArmPlatformPkg/Library/PL031RealTimeClockLib/PL031RealTimeClockLib.inf

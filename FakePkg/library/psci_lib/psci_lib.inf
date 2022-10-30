@@ -11,15 +11,15 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = psci_reset_system_lib
+  BASE_NAME                      = psci_lib
   FILE_GUID                      = c81d76ed-66fa-44a3-ac4a-f163120187a9
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = psci_reset_system_lib|DXE_DRIVER DXE_RUNTIME_DRIVER
-  CONSTRUCTOR                    = psci_reset_system_lib_constructor
+  LIBRARY_CLASS                  = psci_lib|DXE_DRIVER DXE_RUNTIME_DRIVER
+  CONSTRUCTOR                    = psci_lib_constructor
 
 [Sources]
-  psci_reset_system_lib.c
+  psci_lib.c
 
 [Packages]
   ArmPkg/ArmPkg.dec
