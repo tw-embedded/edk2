@@ -1,6 +1,6 @@
 #/** @file
 #
-#  Component description file for PL011SerialPortLib module
+#  Component description file for EarlyFdtPL011SerialPortLib module
 #
 #  Copyright (c) 2011-2015, ARM Ltd. All rights reserved.<BR>
 #
@@ -10,27 +10,29 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = FdtPL011SerialPortLib
-  FILE_GUID                      = CB768406-7DE6-49B6-BC2C-F324E110DE5A
+  BASE_NAME                      = early_pl011_lib
+  FILE_GUID                      = 0983616A-49BC-4732-B531-4AF98D2056F0
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = SerialPortLib|DXE_CORE DXE_DRIVER UEFI_DRIVER DXE_RUNTIME_DRIVER UEFI_APPLICATION
-  CONSTRUCTOR                    = FdtPL011SerialPortLibInitialize
+  LIBRARY_CLASS                  = early_pl011_lib|SEC PEI_CORE PEIM
 
 [Sources.common]
-  FdtPL011SerialPortLib.c
+  early_pl011_lib.c
 
 [LibraryClasses]
   PL011UartLib
-  HobLib
+  PcdLib
+  FdtLib
 
 [Packages]
-  EmbeddedPkg/EmbeddedPkg.dec
+  FakePkg/fake_pkg.dec
   MdePkg/MdePkg.dec
-  MdeModulePkg/MdeModulePkg.dec
+  EmbeddedPkg/EmbeddedPkg.dec
   ArmPlatformPkg/ArmPlatformPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
-  ArmPkg/ArmPkg.dec
+
+[Pcd]
+  gArmVirtTokenSpaceGuid.PcdDeviceTreeInitialBaseAddress
 
 [FixedPcd]
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate
@@ -38,6 +40,3 @@
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultParity
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultStopBits
   gArmPlatformTokenSpaceGuid.PL011UartClkInHz
-
-[Guids]
-  gEarlyPL011BaseAddressGuid

@@ -1,127 +1,81 @@
 /** @file
-  Reset System lib using PSCI hypervisor or secure monitor calls
+  Support ResetSystem Runtime call using PSCI calls
+
+  Note: A similar library is implemented in
+  ArmPkg/Library/ArmPsciResetSystemLib. Similar issues might
+  exist in this implementation too.
 
   Copyright (c) 2008 - 2009, Apple Inc. All rights reserved.<BR>
   Copyright (c) 2013, ARM Ltd. All rights reserved.<BR>
-  Copyright (c) 2014-2020, Linaro Ltd. All rights reserved.<BR>
+  Copyright (c) 2014, Linaro Ltd. All rights reserved.<BR>
   Copyright (c) 2019, Intel Corporation. All rights reserved.<BR>
 
   SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
-#include <PiPei.h>
+#include <PiDxe.h>
 
-#include <libfdt.h>
-#include <Library/ArmHvcLib.h>
-#include <Library/ArmSmcLib.h>
 #include <Library/BaseLib.h>
 #include <Library/DebugLib.h>
-#include <Library/HobLib.h>
 #include <Library/ResetSystemLib.h>
+#include <Library/ArmSmcLib.h>
+#include <Library/ArmHvcLib.h>
+#include <Library/UefiBootServicesTableLib.h>
 
 #include <IndustryStandard/ArmStdSmc.h>
 
-typedef enum {
-  PsciMethodUnknown,
-  PsciMethodSmc,
-  PsciMethodHvc,
-} PSCI_METHOD;
+#include <Protocol/FdtClient.h>
 
-STATIC
-PSCI_METHOD
-DiscoverPsciMethod (
+STATIC UINT32  mArmPsciMethod;
+
+RETURN_STATUS
+EFIAPI
+psci_reset_system_lib_constructor (
   VOID
   )
 {
-  VOID         *DeviceTreeBase;
-  INT32        Node, Prev;
-  INT32        Len;
-  CONST CHAR8  *Compatible;
-  CONST CHAR8  *CompatibleItem;
-  CONST VOID   *Prop;
+  EFI_STATUS           Status;
+  FDT_CLIENT_PROTOCOL  *FdtClient;
 
-  DeviceTreeBase = (VOID *)(UINTN)PcdGet64 (PcdDeviceTreeInitialBaseAddress);
-  ASSERT (fdt_check_header (DeviceTreeBase) == 0);
+  Status = gBS->LocateProtocol (
+                  &gFdtClientProtocolGuid,
+                  NULL,
+                  (VOID **)&FdtClient
+                  );
+  ASSERT_EFI_ERROR (Status);
 
-  //
-  // Enumerate all FDT nodes looking for the PSCI node and capture the method
-  //
-  for (Prev = 0; ; Prev = Node) {
-    Node = fdt_next_node (DeviceTreeBase, Prev, NULL);
-    if (Node < 0) {
-      break;
-    }
-
-    Compatible = fdt_getprop (DeviceTreeBase, Node, "compatible", &Len);
-    if (Compatible == NULL) {
-      continue;
-    }
-
-    //
-    // Iterate over the NULL-separated items in the compatible string
-    //
-    for (CompatibleItem = Compatible; CompatibleItem < Compatible + Len;
-         CompatibleItem += 1 + AsciiStrLen (CompatibleItem))
-    {
-      if (AsciiStrCmp (CompatibleItem, "arm,psci-0.2") != 0) {
-        continue;
-      }
-
-      Prop = fdt_getprop (DeviceTreeBase, Node, "method", NULL);
-      if (!Prop) {
-        DEBUG ((
-          DEBUG_ERROR,
-          "%a: Missing PSCI method property\n",
-          __FUNCTION__
-          ));
-        return PsciMethodUnknown;
-      }
-
-      if (AsciiStrnCmp (Prop, "hvc", 3) == 0) {
-        return PsciMethodHvc;
-      } else if (AsciiStrnCmp (Prop, "smc", 3) == 0) {
-        return PsciMethodSmc;
-      } else {
-        DEBUG ((
-          DEBUG_ERROR,
-          "%a: Unknown PSCI method \"%a\"\n",
-          __FUNCTION__,
-          Prop
-          ));
-        return PsciMethodUnknown;
-      }
-    }
+#if 0
+  CONST VOID           *Prop;
+  Status = FdtClient->FindCompatibleNodeProperty (
+                        FdtClient,
+                        "arm,psci-0.2",
+                        "method",
+                        &Prop,
+                        NULL
+                        );
+  if (EFI_ERROR (Status)) {
+    return Status;
   }
 
-  return PsciMethodUnknown;
-}
-
-STATIC
-VOID
-PerformPsciAction (
-  IN  UINTN  Arg0
-  )
-{
-  ARM_SMC_ARGS  ArmSmcArgs;
-  ARM_HVC_ARGS  ArmHvcArgs;
-
-  ArmSmcArgs.Arg0 = Arg0;
-  ArmHvcArgs.Arg0 = Arg0;
-
-  switch (DiscoverPsciMethod ()) {
-    case PsciMethodHvc:
-      ArmCallHvc (&ArmHvcArgs);
-      break;
-
-    case PsciMethodSmc:
-      ArmCallSmc (&ArmSmcArgs);
-      break;
-
-    default:
-      DEBUG ((DEBUG_ERROR, "%a: no PSCI method defined\n", __FUNCTION__));
-      ASSERT (FALSE);
+  if (AsciiStrnCmp (Prop, "hvc", 3) == 0) {
+    mArmPsciMethod = 1;
+  } else if (AsciiStrnCmp (Prop, "smc", 3) == 0) {
+    mArmPsciMethod = 2;
+  } else {
+    DEBUG ((
+      DEBUG_ERROR,
+      "%a: Unknown PSCI method \"%a\"\n",
+      __FUNCTION__,
+      Prop
+      ));
+    return EFI_NOT_FOUND;
   }
+#else
+  mArmPsciMethod = 1; // hvc
+#endif
+
+  return EFI_SUCCESS;
 }
 
 /**
@@ -138,8 +92,25 @@ ResetCold (
   VOID
   )
 {
+  ARM_SMC_ARGS  ArmSmcArgs;
+  ARM_HVC_ARGS  ArmHvcArgs;
+
   // Send a PSCI 0.2 SYSTEM_RESET command
-  PerformPsciAction (ARM_SMC_ID_PSCI_SYSTEM_RESET);
+  ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_RESET;
+  ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_RESET;
+
+  switch (mArmPsciMethod) {
+    case 1:
+      ArmCallHvc (&ArmHvcArgs);
+      break;
+
+    case 2:
+      ArmCallSmc (&ArmSmcArgs);
+      break;
+
+    default:
+      DEBUG ((DEBUG_ERROR, "%a: no PSCI method defined\n", __FUNCTION__));
+  }
 }
 
 /**
@@ -170,8 +141,25 @@ ResetShutdown (
   VOID
   )
 {
+  ARM_SMC_ARGS  ArmSmcArgs;
+  ARM_HVC_ARGS  ArmHvcArgs;
+
   // Send a PSCI 0.2 SYSTEM_OFF command
-  PerformPsciAction (ARM_SMC_ID_PSCI_SYSTEM_OFF);
+  ArmSmcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_OFF;
+  ArmHvcArgs.Arg0 = ARM_SMC_ID_PSCI_SYSTEM_OFF;
+
+  switch (mArmPsciMethod) {
+    case 1:
+      ArmCallHvc (&ArmHvcArgs);
+      break;
+
+    case 2:
+      ArmCallSmc (&ArmSmcArgs);
+      break;
+
+    default:
+      DEBUG ((DEBUG_ERROR, "%a: no PSCI method defined\n", __FUNCTION__));
+  }
 }
 
 /**

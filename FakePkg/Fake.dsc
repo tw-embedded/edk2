@@ -314,7 +314,7 @@
   MdeModulePkg/Universal/ResetSystemRuntimeDxe/ResetSystemRuntimeDxe.inf
   EmbeddedPkg/RealTimeClockRuntimeDxe/RealTimeClockRuntimeDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/library/pl031_client_lib/pl031_client_lib.inf
+      NULL|FakePkg/library/pl031_lib/pl031_lib.inf
   }
   EmbeddedPkg/MetronomeDxe/MetronomeDxe.inf
 
@@ -329,7 +329,7 @@
   ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/library/ArmVirtTimerFdtClientLib/ArmVirtTimerFdtClientLib.inf
+      NULL|FakePkg/library/timer_client_lib/timer_client_lib.inf
   }
   ArmPlatformPkg/Drivers/NorFlashDxe/NorFlashDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf

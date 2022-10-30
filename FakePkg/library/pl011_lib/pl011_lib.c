@@ -44,7 +44,7 @@ SerialPortInitialize (
 **/
 RETURN_STATUS
 EFIAPI
-FdtPL011SerialPortLibInitialize (
+pl011_lib_initialize (
   VOID
   )
 {

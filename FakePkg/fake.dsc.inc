@@ -113,14 +113,14 @@
 
   PlatformPeiLib|FakePkg/library/PlatformPeiLib/PlatformPeiLib.inf
   MemoryInitPeiLib|FakePkg/library/memory_init_pei_lib/memory_init_pei_lib.inf
-  ResetSystemLib|FakePkg/library/ArmVirtPsciResetSystemLib/ArmVirtPsciResetSystemLib.inf
+  ResetSystemLib|FakePkg/library/psci_reset_system_lib/psci_reset_system_lib.inf
 
   # ARM PL031 RTC Driver
   RealTimeClockLib|ArmPlatformPkg/Library/PL031RealTimeClockLib/PL031RealTimeClockLib.inf
   TimeBaseLib|EmbeddedPkg/Library/TimeBaseLib/TimeBaseLib.inf
   # ARM PL011 UART Driver
   PL011UartLib|ArmPlatformPkg/Library/PL011UartLib/PL011UartLib.inf
-  SerialPortLib|FakePkg/library/FdtPL011SerialPortLib/FdtPL011SerialPortLib.inf
+  SerialPortLib|FakePkg/library/pl011_lib/pl011_lib.inf
 
   #
   # Uncomment (and comment out the next line) For RealView Debugger. The Standard IO window
@@ -190,7 +190,7 @@
   BaseMemoryLib|MdePkg/Library/BaseMemoryLib/BaseMemoryLib.inf
 
   DebugAgentLib|ArmPkg/Library/DebugAgentSymbolsBaseLib/DebugAgentSymbolsBaseLib.inf
-  SerialPortLib|FakePkg/library/FdtPL011SerialPortLib/EarlyFdtPL011SerialPortLib.inf
+  SerialPortLib|FakePkg/library/pl011_lib/early_pl011_lib.inf
   HobLib|MdePkg/Library/PeiHobLib/PeiHobLib.inf
   PeiServicesLib|MdePkg/Library/PeiServicesLib/PeiServicesLib.inf
   PeiServicesTablePointerLib|ArmPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
@@ -209,7 +209,7 @@
   ExtractGuidedSectionLib|MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf
 
   PeiServicesTablePointerLib|ArmPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
-  SerialPortLib|FakePkg/library/FdtPL011SerialPortLib/EarlyFdtPL011SerialPortLib.inf
+  SerialPortLib|FakePkg/library/pl011_lib/early_pl011_lib.inf
 
 [LibraryClasses.common.PEIM]
   PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
@@ -224,7 +224,7 @@
   ExtractGuidedSectionLib|MdePkg/Library/PeiExtractGuidedSectionLib/PeiExtractGuidedSectionLib.inf
 
   PeiServicesTablePointerLib|ArmPkg/Library/PeiServicesTablePointerLib/PeiServicesTablePointerLib.inf
-  SerialPortLib|FakePkg/library/FdtPL011SerialPortLib/EarlyFdtPL011SerialPortLib.inf
+  SerialPortLib|FakePkg/library/pl011_lib/early_pl011_lib.inf
 
 [LibraryClasses.common.DXE_CORE]
   HobLib|MdePkg/Library/DxeCoreHobLib/DxeCoreHobLib.inf

@@ -1,27 +1,28 @@
 #/** @file
-#  FDT client library for ARM's PL031 RTC driver
+#  FDT client library for ARM's TimerDxe
 #
 #  Copyright (c) 2016, Linaro Ltd. All rights reserved.
 #
 #  SPDX-License-Identifier: BSD-2-Clause-Patent
 #
+#
 #**/
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = pl031_client_lib
-  FILE_GUID                      = 13173319-B270-4669-8592-3BB2B31E9E29
+  BASE_NAME                      = timer_client_lib
+  FILE_GUID                      = 77EA80CA-2EFB-4AB4-8567-230D968F6B37
   MODULE_TYPE                    = BASE
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = pl031_client_lib|DXE_DRIVER DXE_RUNTIME_DRIVER
-  CONSTRUCTOR                    = pl031_client_lib_constructor
+  LIBRARY_CLASS                  = timer_client_lib|DXE_DRIVER
+  CONSTRUCTOR                    = timer_client_lib_constructor
 
 [Sources]
-  pl031_client_lib.c
+  timer_client_lib.c
 
 [Packages]
   FakePkg/fake_pkg.dec
-  ArmPlatformPkg/ArmPlatformPkg.dec
+  ArmPkg/ArmPkg.dec
   ArmVirtPkg/ArmVirtPkg.dec
   EmbeddedPkg/EmbeddedPkg.dec
   MdePkg/MdePkg.dec
@@ -36,7 +37,10 @@
   gFdtClientProtocolGuid                                ## CONSUMES
 
 [Pcd]
-  gArmPlatformTokenSpaceGuid.PcdPL031RtcBase
+  gArmTokenSpaceGuid.PcdArmArchTimerSecIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerVirtIntrNum
+  gArmTokenSpaceGuid.PcdArmArchTimerHypIntrNum
 
 [Depex]
   gFdtClientProtocolGuid
