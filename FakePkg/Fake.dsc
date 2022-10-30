@@ -21,7 +21,7 @@
   SUPPORTED_ARCHITECTURES        = AARCH64|ARM
   BUILD_TARGETS                  = DEBUG|RELEASE|NOOPT
   SKUID_IDENTIFIER               = DEFAULT
-  FLASH_DEFINITION               = FakePkg/Fake.fdf
+  FLASH_DEFINITION               = FakePkg/fake.fdf
 
   #
   # Defines for default states.  These can be changed on the command line.

@@ -103,7 +103,7 @@ DATA = {
 gArmTokenSpaceGuid.PcdFvBaseAddress|gArmTokenSpaceGuid.PcdFvSize
 FV = FVMAIN_COMPACT
 
-!include VarStore.fdf.inc
+!include var_store.fdf.inc
 
 ################################################################################
 #
@@ -116,7 +116,7 @@ FV = FVMAIN_COMPACT
 #
 ################################################################################
 
-!include FakeFvMain.fdf.inc
+!include fake_fv_main.fdf.inc
 
 [FV.FVMAIN_COMPACT]
 FvAlignment        = 16
