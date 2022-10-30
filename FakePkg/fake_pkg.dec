@@ -23,7 +23,7 @@
 #
 ################################################################################
 [Includes.common]
-  Include                        # Root include for the package
+  include                        # Root include for the package
 
 [LibraryClasses]
   ArmVirtMemInfoLib|Include/Library/ArmVirtMemInfoLib.h
