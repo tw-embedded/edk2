@@ -29,7 +29,7 @@ typedef struct {
 #if 1
 RETURN_STATUS
 EFIAPI
-timer_client_lib_constructor (
+timer_lib_constructor (
   VOID
   )
 {

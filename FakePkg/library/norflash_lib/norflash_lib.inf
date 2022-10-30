@@ -10,14 +10,14 @@
 
 [Defines]
   INF_VERSION                    = 0x00010005
-  BASE_NAME                      = NorFlashQemuLib
+  BASE_NAME                      = norflash_lib
   FILE_GUID                      = 339B7829-4C5F-4EFC-B2DD-5050E530DECE
   MODULE_TYPE                    = DXE_DRIVER
   VERSION_STRING                 = 1.0
-  LIBRARY_CLASS                  = NorFlashPlatformLib
+  LIBRARY_CLASS                  = norflash_lib
 
 [Sources.common]
-  NorFlashQemuLib.c
+  norflash_lib.c
 
 [Packages]
   FakePkg/fake_pkg.dec

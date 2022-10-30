@@ -65,7 +65,7 @@
   ArmVirtMemInfoLib|FakePkg/library/QemuVirtMemInfoLib/QemuVirtMemInfoLib.inf
 
   TimerLib|ArmPkg/Library/ArmArchTimerLib/ArmArchTimerLib.inf
-  NorFlashPlatformLib|FakePkg/library/NorFlashQemuLib/NorFlashQemuLib.inf
+  NorFlashPlatformLib|FakePkg/library/norflash_lib/norflash_lib.inf
 
   CapsuleLib|MdeModulePkg/Library/DxeCapsuleLibNull/DxeCapsuleLibNull.inf
   BootLogoLib|MdeModulePkg/Library/BootLogoLib/BootLogoLib.inf
@@ -329,7 +329,7 @@
   ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
   ArmPkg/Drivers/TimerDxe/TimerDxe.inf {
     <LibraryClasses>
-      NULL|FakePkg/library/timer_client_lib/timer_client_lib.inf
+      NULL|FakePkg/library/timer_lib/timer_lib.inf
   }
   ArmPlatformPkg/Drivers/NorFlashDxe/NorFlashDxe.inf
   MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
