@@ -45,8 +45,8 @@ psci_lib_constructor (
                   );
   ASSERT_EFI_ERROR (Status);
 
-  mArmPsciMethod = 1; // hvc
-  //mArmPsciMethod = 2; // smc
+  //mArmPsciMethod = 1; // hvc
+  mArmPsciMethod = 2; // smc
 
   return EFI_SUCCESS;
 }
