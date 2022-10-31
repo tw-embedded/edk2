@@ -45,35 +45,8 @@ psci_lib_constructor (
                   );
   ASSERT_EFI_ERROR (Status);
 
-#if 0
-  CONST VOID           *Prop;
-  Status = FdtClient->FindCompatibleNodeProperty (
-                        FdtClient,
-                        "arm,psci-0.2",
-                        "method",
-                        &Prop,
-                        NULL
-                        );
-  if (EFI_ERROR (Status)) {
-    return Status;
-  }
-
-  if (AsciiStrnCmp (Prop, "hvc", 3) == 0) {
-    mArmPsciMethod = 1;
-  } else if (AsciiStrnCmp (Prop, "smc", 3) == 0) {
-    mArmPsciMethod = 2;
-  } else {
-    DEBUG ((
-      DEBUG_ERROR,
-      "%a: Unknown PSCI method \"%a\"\n",
-      __FUNCTION__,
-      Prop
-      ));
-    return EFI_NOT_FOUND;
-  }
-#else
   mArmPsciMethod = 1; // hvc
-#endif
+  //mArmPsciMethod = 2; // smc
 
   return EFI_SUCCESS;
 }

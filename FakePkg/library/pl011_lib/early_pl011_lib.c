@@ -46,92 +46,6 @@ SerialPortInitialize (
   return RETURN_SUCCESS;
 }
 
-#if 0
-STATIC
-UINT64
-SerialPortGetBaseAddress (
-  VOID
-  )
-{
-  UINT64              BaudRate;
-  UINT32              ReceiveFifoDepth;
-  EFI_PARITY_TYPE     Parity;
-  UINT8               DataBits;
-  EFI_STOP_BITS_TYPE  StopBits;
-  VOID                *DeviceTreeBase;
-  INT32               Node, Prev;
-  INT32               Len;
-  CONST CHAR8         *Compatible;
-  CONST CHAR8         *NodeStatus;
-  CONST CHAR8         *CompatibleItem;
-  CONST UINT64        *RegProperty;
-  UINTN               UartBase;
-  RETURN_STATUS       Status;
-
-  DeviceTreeBase = (VOID *)(UINTN)PcdGet64 (PcdDeviceTreeInitialBaseAddress);
-
-  if ((DeviceTreeBase == NULL) || (fdt_check_header (DeviceTreeBase) != 0)) {
-    return 0;
-  }
-
-  //
-  // Enumerate all FDT nodes looking for a PL011 and capture its base address
-  //
-  for (Prev = 0; ; Prev = Node) {
-    Node = fdt_next_node (DeviceTreeBase, Prev, NULL);
-    if (Node < 0) {
-      break;
-    }
-
-    Compatible = fdt_getprop (DeviceTreeBase, Node, "compatible", &Len);
-    if (Compatible == NULL) {
-      continue;
-    }
-
-    //
-    // Iterate over the NULL-separated items in the compatible string
-    //
-    for (CompatibleItem = Compatible; CompatibleItem < Compatible + Len;
-         CompatibleItem += 1 + AsciiStrLen (CompatibleItem))
-    {
-      if (AsciiStrCmp (CompatibleItem, "arm,pl011") == 0) {
-        NodeStatus = fdt_getprop (DeviceTreeBase, Node, "status", &Len);
-        if ((NodeStatus != NULL) && (AsciiStrCmp (NodeStatus, "okay") != 0)) {
-          continue;
-        }
-
-        RegProperty = fdt_getprop (DeviceTreeBase, Node, "reg", &Len);
-        if (Len != 16) {
-          return 0;
-        }
-
-        UartBase = (UINTN)fdt64_to_cpu (ReadUnaligned64 (RegProperty));
-
-        BaudRate         = (UINTN)FixedPcdGet64 (PcdUartDefaultBaudRate);
-        ReceiveFifoDepth = 0; // Use the default value for Fifo depth
-        Parity           = (EFI_PARITY_TYPE)FixedPcdGet8 (PcdUartDefaultParity);
-        DataBits         = FixedPcdGet8 (PcdUartDefaultDataBits);
-        StopBits         = (EFI_STOP_BITS_TYPE)FixedPcdGet8 (PcdUartDefaultStopBits);
-
-        Status = PL011UartInitializePort (
-                   UartBase,
-                   FixedPcdGet32 (PL011UartClkInHz),
-                   &BaudRate,
-                   &ReceiveFifoDepth,
-                   &Parity,
-                   &DataBits,
-                   &StopBits
-                   );
-        if (!EFI_ERROR (Status)) {
-          return UartBase;
-        }
-      }
-    }
-  }
-
-  return 0;
-}
-#else
 STATIC
 UINT64
 SerialPortGetBaseAddress (
@@ -167,7 +81,6 @@ SerialPortGetBaseAddress (
   }
   return 0;
 }
-#endif
 
 /**
   Write data to serial device.
