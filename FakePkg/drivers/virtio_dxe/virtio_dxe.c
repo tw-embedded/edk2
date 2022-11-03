@@ -39,6 +39,8 @@ EFI_STATUS EFIAPI initialize_virtio_dxe(IN EFI_HANDLE ImageHandle, IN EFI_SYSTEM
     VIRTIO_TRANSPORT_DEVICE_PATH  *DevicePath;
     EFI_HANDLE Handle;
 
+    DEBUG((DEBUG_ERROR, "init virtio_dxe (%s)\n", __FUNCTION__));
+
     RegBase = VIRT_IO_BASE;
     RegSize = VIRT_IO_SIZE;
     for (i = 0; i < VIRT_IO_CNT; i++) {
