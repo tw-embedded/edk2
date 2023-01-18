@@ -113,7 +113,6 @@ READ_LOCK_STATUS   = TRUE
   INF MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
   INF MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
   INF MdeModulePkg/Application/UiApp/UiApp.inf
-  INF OvmfPkg/QemuKernelLoaderFsDxe/QemuKernelLoaderFsDxe.inf
 
   #
   # Networking stack
@@ -166,7 +165,6 @@ READ_LOCK_STATUS   = TRUE
   #
   # Video support
   #
-  INF OvmfPkg/QemuRamfbDxe/QemuRamfbDxe.inf
   INF OvmfPkg/VirtioGpuDxe/VirtioGpu.inf
   INF OvmfPkg/PlatformDxe/Platform.inf
 
