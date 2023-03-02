@@ -32,7 +32,6 @@
   ArmVirtPkg/ArmVirtPkg.dec
 
 [Pcd]
-  gArmVirtTokenSpaceGuid.PcdDeviceTreeInitialBaseAddress
 
 [FixedPcd]
   gEfiMdePkgTokenSpaceGuid.PcdUartDefaultBaudRate

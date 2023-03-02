@@ -151,20 +151,6 @@ ASM_PFX(DiscoverDramFromDt):
   mov   x1, MEMORY_SIZE
   str   x1, [x0]
 
-  //
-  // Copy the DTB to the slack space right after the 64 byte arm64/Linux style
-  // image header at the base of this image (defined in the FDF), and record the
-  // pointer in PcdDeviceTreeInitialBaseAddress.
-  //
-  adr   x8, PcdGet64 (PcdDeviceTreeInitialBaseAddress)
-  add   x27, x27, #0x40
-  str   x27, [x8]
-
-  mov   x0, x27
-  mov   x1, x28
-  bl    CopyFdt
-
-.Lout:
   ret    x29
 
 .LArm64LinuxMagic:

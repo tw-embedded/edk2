@@ -16,7 +16,6 @@
   VERSION_STRING                 = 1.0
 
 [Sources]
-  FdtParser.c
   PrePi.c
   PrePi.h
 
